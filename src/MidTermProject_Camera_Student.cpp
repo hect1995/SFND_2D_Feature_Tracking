@@ -42,20 +42,17 @@ int main(int argc, const char *argv[])
     int head = 0;
     int tail = 0;
     /* MAIN LOOP OVER ALL IMAGES */
-    std::vector<std::string> detectors{"SHITOMASI","HARRIS","FAST","BRISK","ORB","AKAZE","SIFT"};
+    std::vector<std::string> detectors{"SHITOMASI","HARRIS","FAST","BRISK","ORB","AKAZE"};
     std::vector<std::string> descriptors{"BRISK","BRIEF","ORB","FREAK","SIFT"}; // Include akaze
     std::map<std::string,int> detected_points;
     std::map<std::vector<std::string>,int> matched_keypoints;
-    std::map<std::vector<std::string>,int> time_keypoints;
+    std::map<std::vector<std::string>,float> speed_keypoints;
     for (auto detector : detectors){
         int counter_key_detectors = 0;
         for (auto descriptor : descriptors){
             int matched_key_points = 0;
-            int time_key_points = 0;
+            float time_key_points = 0;
             std::vector<DataFrame> dataBuffer; // list of data frames which are held in memory at the same time
-            if (descriptor == "SIFT"){
-                int y = 5;
-            }
             for (size_t imgIndex = 0; imgIndex <= imgEndIndex - imgStartIndex; imgIndex++)
             {
                 /* LOAD IMAGE INTO BUFFER */
@@ -78,9 +75,9 @@ int main(int argc, const char *argv[])
                 DataFrame frame;
                 frame.cameraImg = imgGray;
                 dataBuffer.push_back(frame);
-                std::cout << "Size: " << dataBuffer.size() << "\n";
+                //std::cout << "Size: " << dataBuffer.size() << "\n";
                 //// EOF STUDENT ASSIGNMENT
-                cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
+                //cout << "#1 : LOAD IMAGE INTO BUFFER done" << endl;
 
                 /* DETECT IMAGE KEYPOINTS */
 
@@ -140,7 +137,7 @@ int main(int argc, const char *argv[])
 
                 // push keypoints and descriptor for current frame to end of data buffer
                 (dataBuffer.end() - 1)->keypoints = keypoints;
-                cout << "#2 : DETECT KEYPOINTS done" << endl;
+                //cout << "#2 : DETECT KEYPOINTS done" << endl;
 
                 /* EXTRACT KEYPOINT DESCRIPTORS */
 
@@ -156,14 +153,14 @@ int main(int argc, const char *argv[])
                 // push descriptors for current frame to end of data buffer
                 (dataBuffer.end() - 1)->descriptors = descriptors;
 
-                cout << "#3 : EXTRACT DESCRIPTORS done" << endl;
+                //cout << "#3 : EXTRACT DESCRIPTORS done" << endl;
 
                 if (dataBuffer.size() > 1) // wait until at least two images have been processed
                 {
                     /* MATCH KEYPOINT DESCRIPTORS */
 
                     vector<cv::DMatch> matches;
-                    string matcherType = "MAT_BF";        // MAT_BF, MAT_FLANN
+                    string matcherType = "MAT_FLANN";        // MAT_BF, MAT_FLANN
                     string descriptorType = "DES_BINARY"; // DES_BINARY, DES_HOG
                     string selectorType = "SEL_KNN";       // SEL_NN, SEL_KNN
 
@@ -183,7 +180,7 @@ int main(int argc, const char *argv[])
                     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
                     time_key_points += t;
 
-                    cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
+                    //cout << "#4 : MATCH KEYPOINT DESCRIPTORS done" << endl;
 
                     // visualize matches between current and previous image
                     bVis = false;
@@ -207,12 +204,25 @@ int main(int argc, const char *argv[])
 
             } // eof loop over all image
             matched_keypoints[{detector,descriptor}] = matched_key_points;
-            time_keypoints[{detector,descriptor}] = time_key_points;
+            speed_keypoints[{detector,descriptor}] = time_key_points;
         }
-        detected_points[detector] = counter_key_detectors/descriptors.size();
+        detected_points.insert({detector,counter_key_detectors/descriptors.size()});
 
     }
-    int t = 0;
-
+    std::cout << "Number Detected Points\n";
+    for (auto detected : detected_points)
+    {
+        std::cout << detected.first << ": " << detected.second << "\n";
+    }
+    std::cout << "Number Matched Keypoints\n";
+    for (auto matched : matched_keypoints)
+    {
+        std::cout << "Detector: "<<matched.first[0] << " , Descriptor: " << matched.first[1] <<"-> " << matched.second<< "\n";
+    }
+    std::cout << "Time Matched Keypoints\n";
+    for (auto matched : speed_keypoints)
+    {
+        std::cout << "Detector: "<<matched.first[0] << " , Descriptor: " << matched.first[1] <<"-> " << matched.second<< "\n";
+    }
     return 0;
 }

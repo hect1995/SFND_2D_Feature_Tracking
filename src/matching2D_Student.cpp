@@ -17,7 +17,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
         double t2 = (double)cv::getTickCount();
         matcher = cv::BFMatcher::create(normType, crossCheck);
         t2 = ((double)cv::getTickCount() - t2) / cv::getTickFrequency();
-        cout << "BF matching cross-check=" << crossCheck << " and time=" << t2 << "\n";
+        //cout << "BF matching cross-check=" << crossCheck << " and time=" << t2 << "\n";
     }
     else if (matcherType.compare("MAT_FLANN") == 0)
     {
@@ -29,11 +29,11 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
         {
             descRef.convertTo(descRef, CV_32F);
         }            
-        cout << "FLANN matching";
+        //cout << "FLANN matching";
         double t2 = (double)cv::getTickCount();
         matcher = cv::DescriptorMatcher::create(cv::DescriptorMatcher::FLANNBASED);
         t2 = ((double)cv::getTickCount() - t2) / cv::getTickFrequency();
-        cout << "FLANN matching cross-check=" << crossCheck << " and time=" << t2 << "\n";
+        //cout << "FLANN matching cross-check=" << crossCheck << " and time=" << t2 << "\n";
     }
 
     // perform matching task
@@ -56,7 +56,7 @@ void matchDescriptors(std::vector<cv::KeyPoint> &kPtsSource, std::vector<cv::Key
             }
         }
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-        cout << " (KNN) with n=" << matches.size() << " matches in " << 1000 * t / 1.0 << " ms" << endl;
+        //cout << " (KNN) with n=" << matches.size() << " matches in " << 1000 * t / 1.0 << " ms" << endl;
     }
 }
 
@@ -101,7 +101,7 @@ void descKeypoints(vector<cv::KeyPoint> &keypoints, cv::Mat &img, cv::Mat &descr
     double t = (double)cv::getTickCount();
     extractor->compute(img, keypoints, descriptors);
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-    cout << descriptorType << " descriptor extraction in " << 1000 * t / 1.0 << " ms" << endl;
+    //cout << descriptorType << " descriptor extraction in " << 1000 * t / 1.0 << " ms" << endl;
 }
 
 // Detect keypoints in image using the traditional Shi-Thomasi detector
@@ -131,7 +131,7 @@ void detKeypointsShiTomasi(vector<cv::KeyPoint> &keypoints, cv::Mat &img, bool b
         keypoints.push_back(newKeyPoint);
     }
     t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-    cout << "Shi-Tomasi detection with in " << 1000 * t / 1.0 << " ms" << endl;
+    //cout << "Shi-Tomasi detection with in " << 1000 * t / 1.0 << " ms" << endl;
 
     // visualize results
     if (bVis)
@@ -208,14 +208,14 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
         cv::Ptr<cv::FeatureDetector> detector = cv::FastFeatureDetector::create(threshold,nonmaxsupression);
         detector->detect(img,keypoints);
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-        cout << "FAST detection with in " << 1000 * t / 1.0 << " ms" << endl;
+        //cout << "FAST detection with in " << 1000 * t / 1.0 << " ms" << endl;
     }
     else if (detectorType == "BRISK"){
         double t = (double)cv::getTickCount();
         cv::Ptr<cv::FeatureDetector> detector = cv::BRISK::create(); //initialize algoritm
         detector->detect(img, keypoints);
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-        cout << "BRISK detection with in " << 1000 * t / 1.0 << " ms" << endl;
+        //cout << "BRISK detection with in " << 1000 * t / 1.0 << " ms" << endl;
     }
 
     else if (detectorType == "ORB"){
@@ -223,21 +223,21 @@ void detKeypointsModern(std::vector<cv::KeyPoint> &keypoints, cv::Mat &img, std:
         cv::Ptr<cv::FeatureDetector> detector = cv::ORB::create(); //initialize algoritm
         detector->detect(img, keypoints);
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-        cout << "ORB detection with in " << 1000 * t / 1.0 << " ms" << endl;
+        //cout << "ORB detection with in " << 1000 * t / 1.0 << " ms" << endl;
     }
     else if (detectorType == "AKAZE"){
         double t = (double)cv::getTickCount();
         cv::Ptr<cv::FeatureDetector> detector = cv::AKAZE::create();  //initialize algoritm
         detector->detect(img, keypoints);
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-        cout << "AKAZE detection with in " << 1000 * t / 1.0 << " ms" << endl;
+        //cout << "AKAZE detection with in " << 1000 * t / 1.0 << " ms" << endl;
     }
     else if (detectorType == "SIFT"){
         double t = (double)cv::getTickCount();
         cv::Ptr<cv::FeatureDetector> detector = cv::xfeatures2d::SIFT::create();
         detector->detect(img, keypoints);
         t = ((double)cv::getTickCount() - t) / cv::getTickFrequency();
-        cout << "SIFT detection with in " << 1000 * t / 1.0 << " ms" << endl;
+        //cout << "SIFT detection with in " << 1000 * t / 1.0 << " ms" << endl;
     }
 
     if (bVis)

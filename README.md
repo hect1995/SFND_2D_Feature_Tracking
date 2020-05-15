@@ -32,3 +32,50 @@ See the classroom instruction and code comments for more details on each of thes
 2. Make a build directory in the top level directory: `mkdir build && cd build`
 3. Compile: `cmake .. && make`
 4. Run it: `./2D_feature_tracking`.
+
+### Performance
+#### MP.7 Performance Evaluation 1
+Number of detected keypoints for each detector on the preceding vehicle for total of 10 images
+| Detector | Number of detected Keypoints |
+| --- | --- |
+| SHITOMASI | 1189 |
+| HARRIS | 1084 |
+| FAST | 4136 |
+| BRISK | 2714 |
+| ORB | 1150 |
+| AKAZE | 1655 |
+| SIFT | 1371 |
+#### MP.8 Performance Evaluation 2
+The number of matched keypoints for all 10 images using all possible combinations of detectors and descriptors
+| Detector\Descriptor | BRISK | BRIEF | ORB | FREAK | AKAZE | SIFT |
+| --- | --- | --- |--- |--- |--- |--- |
+|**SHITOMASI**	|771|	953|914	|768|	N/A	|928|
+|**HARRIS**	|393	|423|	412	|443|	N/A|	409|
+|**FAST**|	2248	|2924|	2869	|2284|	N/A|	2805|
+|**BRISK**	|1563|	1805	|1496	|1518	|N/A|	1620
+|**ORB**|	753	|576|	757	|438|	N/A|	763|
+|**AKAZE**	|1206|	1322|	1186|	1183|	1249	|1263|
+|**SIFT**	|602|	751|	Out of Memory	|626|	N/A	|820|
+
+#### MP.9 Performance Evaluation 3
+Average Processing Time (ms) on all images for each detector/descriptor combination
+| Detector\Descriptor | BRISK | BRIEF | ORB | FREAK | AKAZE | SIFT |
+| --- | --- | --- |--- |--- |--- |--- |
+|**SHITOMASI**|	601.261|	25.3585|	34.3536|	104.04|	N/A|	63.8929|
+|**HARRIS**	|564.416|	28.8252|	35.3673|	103.321|	N/A|	59.392|
+|**FAST**|	554.408|	11.0708|	17.3062|	88.828|	N/A|	75.9405|
+|**BRISK**	|1174.21|	616.871|	645.412|	691.046|	N/A|	702.332|
+|**ORB**|547.948|	20.8855|	50.7708|	100.113|	N/A|	112.002|
+|**AKAZE**|	745.616|	215.533|	232.859|	286.765|	344.428|	257.345|
+|**SIFT**	|762.529|	227.408|	Out of Memory	|326.65|	N/A|	343.704|
+
+
+#### TOP 3 suggestion
+Given that we are not looking into the correctness of matched points, I rank the performance mainly based on processing time.
+The combination that runs faster while getting fairly good amount of matched points is ranked higher.
+Top 3 combinations are ranked as following:
+|Rank |Combination  | 	Processing Time(ms) | Matched Points|
+| --- |--- | --- | --- |
+|1 |FAST/BRIEF|	161	|2924				|
+|2 |ORB/BRIEF|	77	|2869				|
+|3 |HARRIS/BRIEF	|91	|757|
